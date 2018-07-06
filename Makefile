@@ -15,3 +15,8 @@ clean:
 run:
 	$(GOBUILD) -v
 	./$(BINARY_NAME)
+release:
+	rm -rf dist
+	curl -sL https://git.io/goreleaser | bash
+	rm -rf dist
+
