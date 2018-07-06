@@ -1,7 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/json"
+	"errors"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -14,7 +17,8 @@ var (
 
 	// All of the params that our CLI can accept
 	pAPIURL      = []string{"u", "api-url"}
-	pEditor      = []string{"e", "editor"}
+	pEditorToken = []string{"t", "editor-token"}
+	pEditorType  = []string{"e", "editor-type"}
 	pProjectName = []string{"p", "project-name"}
 	pFileName    = []string{"f", "file-name"}
 	pLocWritten  = []string{"w", "loc-written"}
@@ -25,14 +29,14 @@ var (
 
 // Unit This is the data type that we need to send to the API
 type Unit struct {
-	EditorType  *string
-	ProjectName *string
-	FileName    *string
-	LocWritten  *int
-	LocDeleted  *int
-	Os          *string
-	StartedAt   *string
-	StoppedAt   *string
+	EditorType  string `json:"editor_type"`
+	ProjectName string `json:"project_name"`
+	FileName    string `json:"file_name"`
+	LocWritten  int    `json:"loc_written"`
+	LocDeleted  int    `json:"loc_deleted"`
+	Os          string `json:"os"`
+	StartedAt   string `json:"started_at"`
+	StoppedAt   string `json:"stopped_at"`
 }
 
 func main() {
@@ -41,7 +45,11 @@ func main() {
 		Required: true,
 		Help:     "The URL of the API to send the request",
 	})
-	editorType := parser.String(pEditor[0], pEditor[1], &argparse.Options{
+	editorToken := parser.String(pEditorToken[0], pEditorToken[1], &argparse.Options{
+		Required: true,
+		Help:     "The editor token associated with a user",
+	})
+	editorType := parser.String(pEditorType[0], pEditorType[1], &argparse.Options{
 		Required: true,
 		Help:     "The editor that is being used",
 	})
@@ -73,26 +81,53 @@ func main() {
 
 	err := parser.Parse(os.Args)
 	if err != nil {
-		fmt.Errorf("There is an error: %s", err)
+		log.Fatalf("There is an error: %s", err)
 	}
 
 	unit := Unit{
-		EditorType:  editorType,
-		ProjectName: projectName,
-		FileName:    fileName,
-		LocWritten:  locWritten,
-		LocDeleted:  locDeleted,
-		Os:          &operatingSystem,
-		StartedAt:   startedAt,
-		StoppedAt:   stoppedAt,
+		EditorType:  *editorType,
+		ProjectName: *projectName,
+		FileName:    *fileName,
+		LocWritten:  *locWritten,
+		LocDeleted:  *locDeleted,
+		Os:          operatingSystem,
+		StartedAt:   *startedAt,
+		StoppedAt:   *stoppedAt,
 	}
 
-	if err := sendUnit(apiUrl, unit); err != nil {
+	// TODO: Need to solve offline cases here
+	if err := sendUnit(*apiUrl, unit, *editorToken); err != nil {
 		// We need reason codes here so we know what to do next
+		log.Fatal(err)
 	}
 }
 
-func sendUnit(url *string, u Unit) error {
-	// TODO: Finish making HTTP request...
-	resp, err := http.Post(url)
+func sendUnit(url string, u Unit, et string) error {
+	data, err := json.Marshal(u)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(data))
+	req.Header.Set(xHeader, et)
+	req.Header.Set("Content-Type", "application/json")
+
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 201 {
+		return errors.New("The request did not go through")
+	}
+
+	return nil
 }

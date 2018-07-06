@@ -1,0 +1,7 @@
+builds:
+  - main: main.go
+  - binary: hackerlog
+    goos:
+      - windows
+      - darwin
+      - linux
