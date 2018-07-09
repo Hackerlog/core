@@ -1,6 +1,8 @@
+archive:
+  name_template: "core_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 builds:
   - main: main.go
-  - binary: hackerlog
+  - binary: core
     goos:
       - windows
       - darwin

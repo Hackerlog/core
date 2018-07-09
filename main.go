@@ -69,7 +69,6 @@ func main() {
 		Required: false,
 		Help:     "The amount of lines of code that has been deleted.",
 	})
-	operatingSystem := runtime.GOOS
 	startedAt := parser.String(pStartedAt[0], pStartedAt[1], &argparse.Options{
 		Required: true,
 		Help:     "When did the file start being edited",
@@ -78,6 +77,7 @@ func main() {
 		Required: true,
 		Help:     "When did the file stop being edited",
 	})
+	operatingSystem := runtime.GOOS
 
 	err := parser.Parse(os.Args)
 	if err != nil {

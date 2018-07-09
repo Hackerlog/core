@@ -6,6 +6,8 @@ BINARY_NAME=core
 BINARY_UNIX=$(BINARY_NAME)_unix
 
 all: build
+init:
+	dep ensure
 build: 
 	$(GOBUILD) -v
 clean: 
