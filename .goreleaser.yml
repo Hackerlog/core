@@ -1,5 +1,6 @@
 archive:
   name_template: "core_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  format: zip
 builds:
   - main: main.go
   - binary: core
