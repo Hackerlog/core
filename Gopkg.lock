@@ -7,9 +7,27 @@
   packages = ["."]
   revision = "99676ba18cd5c0c3b331a13801ccd2b5c16a9259"
 
+[[projects]]
+  name = "github.com/certifi/gocertifi"
+  packages = ["."]
+  revision = "deb3ae2ef2610fde3330947281941c562861188b"
+  version = "2018.01.18"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/getsentry/raven-go"
+  packages = ["."]
+  revision = "ed7bcb39ff10f39ab08e317ce16df282845852fa"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dc6a8b0b3441c17970a928d28aa63d768c2aefbc5ff48bdd9574af9a237ca12e"
+  inputs-digest = "206e6336fbe760c75f32ae4ece143302a780b7ecd6ad8bc6d2c4aa8d130a6cae"
   solver-name = "gps-cdcl"
   solver-version = 1

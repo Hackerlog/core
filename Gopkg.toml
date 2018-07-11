@@ -5,3 +5,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/akamensky/argparse"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/getsentry/raven-go"

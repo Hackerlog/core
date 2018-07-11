@@ -14,9 +14,6 @@ clean:
 	$(GOCLEAN)
 	rm -f $(BINARY_NAME)
 	rm -f $(BINARY_UNIX)
-run:
-	$(GOBUILD) -v
-	./$(BINARY_NAME)
 release:
 	rm -rf dist
 	curl -sL https://git.io/goreleaser | bash

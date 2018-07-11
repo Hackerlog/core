@@ -3,8 +3,10 @@ archive:
   format: zip
 builds:
   - main: main.go
-  - binary: core
+    binary: core
     goos:
       - windows
       - darwin
       - linux
+    env:
+      - ENV=production
